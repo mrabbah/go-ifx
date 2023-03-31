@@ -1,0 +1,27 @@
+version: "3.5"
+
+# networks:
+#   frontend:
+#     name: frontend
+#   storage:
+#     name: storage
+
+# volumes:
+#   data:
+
+services:
+  workspace:
+    build: .
+    volumes:
+      - ..:/workspace:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    ports:
+      - 9000:9000
+  ifx:
+    image: ibmcom/informix-developer-database:12.10.FC12W1DE
+    restart: always
+    environment:
+      LICENSE: 'accept'
+    ports:
+      - 9088:9088
+      - 9089:9089

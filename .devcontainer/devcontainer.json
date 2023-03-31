@@ -2,18 +2,8 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.195.0/containers/go
 {
 	"name": "Go",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": {
-			// Update the VARIANT arg to pick a version of Go: 1, 1.16, 1.17
-			// Append -bullseye or -buster to pin to an OS version.
-			// Use -bullseye variants on local arm64/Apple Silicon.
-			"VARIANT": "1.17-bullseye",
-			// Options
-			"NODE_VERSION": "lts/*"
-		}
-	},
-	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+	"dockerComposeFile": "./docker-compose.yml",
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -29,7 +19,8 @@
 			
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"golang.Go"
+				"golang.Go",
+				"GitHub.copilot"
 			]
 		}
 	},
@@ -44,6 +35,11 @@
 			"onAutoForward": "notify"
 		}
 	},
+	"forwardPorts": [
+		9000,
+		9088,
+		9089
+	],
 
 	// Use 'otherPortsAttributes' to configure any ports that aren't configured using 'portsAttributes'.
 	// "otherPortsAttributes": {
@@ -54,5 +50,7 @@
 	// "postCreateCommand": "go version",
 
 	// Uncomment to connect as a non-root user. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "vscode",
+	"service": "workspace",
+	"workspaceFolder": "/workspace"
 }
