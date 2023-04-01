@@ -18,7 +18,7 @@ services:
     ports:
       - 9000:9000
   ifx:
-    image: ibmcom/informix-developer-database:12.10.FC12W1DE
+    image: ibmcom/informix-developer-database:latest
     restart: always
     environment:
       LICENSE: 'accept'
