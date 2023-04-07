@@ -17,6 +17,7 @@ services:
     command: /bin/sh -c "while sleep 1000; do :; done"
     ports:
       - 9000:9000
+      
   ifx:
     image: ibmcom/informix-developer-database:latest
     restart: always

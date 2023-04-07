@@ -1,14 +1,27 @@
-FROM mcr.microsoft.com/vscode/devcontainers/go:0-1.18-bullseye
+# FROM mcr.microsoft.com/vscode/devcontainers/go:0-1.18-bullseye
+FROM ubuntu:22.04
 
-# [Optional] Uncomment this section to install additional OS packages.
+RUN apt-get update && apt-get install -y wget gcc
+
+WORKDIR /tmp
+
+RUN wget https://golang.org/dl/go1.17.5.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.17.5.linux-amd64.tar.gz \
+    && rm go1.17.5.linux-amd64.tar.gz
+
+ENV PATH="/usr/local/go/bin:${PATH}" 
+
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends unixodbc unixodbc-dev
 
-COPY IBMInformixODBCDriverforUnix.deb /tmp/IBMInformixODBCDriverforUnix.deb
-RUN dpkg -i /tmp/IBMInformixODBCDriverforUnix.deb
+ENV USERHOME /root 
+ENV INFORMIXDIR /root/odbc
+ENV LD_LIBRARY_PATH ${INFORMIXDIR}/lib:${INFORMIXDIR}/lib/cli:${INFORMIXDIR}/lib/esql
 
-# [Optional] Uncomment the next line to use go get to install anything else you need
-# RUN go get -x <your-dependency-or-tool>
+COPY ./odbc/OneDB-Linux64-ODBC-Driver.tar.gz /tmp
+RUN  tar -xf OneDB-Linux64-ODBC-Driver.tar.gz -C ./
+RUN  cp -r  /tmp/onedb-odbc-driver ${INFORMIXDIR}
 
-# [Optional] Uncomment this line to install global node packages.
-# RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
+COPY ./odbc/odbcinst.ini /etc/odbcinst.ini
+COPY ./odbc/odbc.ini ${USERHOME}/.odbc.ini
+COPY ./odbc/sqlhosts ${INFORMIXDIR}/etc/sqlhosts
